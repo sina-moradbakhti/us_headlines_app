@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:nexttoptech_assignment/core/constants/app_strings.dart';
 
 import '../controller/news_controller.dart';
 import 'appbar_company_dropdown_widget.dart';
@@ -54,26 +55,40 @@ class ArticleListWidget extends GetView<NewsController> {
     );
   }
 
-  Widget get _remoteData => ListView.builder(
-        controller: controller.scrolController,
-        padding: const EdgeInsets.symmetric(
-          vertical: 30,
-          horizontal: 16,
-        ),
-        itemCount: controller.articles.length,
-        itemBuilder: (context, index) => ArticleListItemWidget(
-          article: controller.articles.value[index],
-        ),
-      );
+  Widget get _remoteData => controller.articles.isNotEmpty
+      ? ListView.builder(
+          controller: controller.scrolController,
+          padding: const EdgeInsets.symmetric(
+            vertical: 30,
+            horizontal: 16,
+          ),
+          itemCount: controller.articles.length,
+          itemBuilder: (context, index) => ArticleListItemWidget(
+            article: controller.articles.value[index],
+          ),
+        )
+      : Center(
+          child: Text(
+            AppStrings.nothingToShow,
+            style: Get.textTheme.labelSmall,
+          ),
+        );
 
-  Widget get _localData => ListView.builder(
-        padding: const EdgeInsets.symmetric(
-          vertical: 30,
-          horizontal: 16,
-        ),
-        itemCount: controller.cachedArticles.length,
-        itemBuilder: (context, index) => ArticleListItemWidget(
-          article: controller.cachedArticles.value[index],
-        ),
-      );
+  Widget get _localData => controller.cachedArticles.isNotEmpty
+      ? ListView.builder(
+          padding: const EdgeInsets.symmetric(
+            vertical: 30,
+            horizontal: 16,
+          ),
+          itemCount: controller.cachedArticles.length,
+          itemBuilder: (context, index) => ArticleListItemWidget(
+            article: controller.cachedArticles.value[index],
+          ),
+        )
+      : Center(
+          child: Text(
+            AppStrings.nothingToShow,
+            style: Get.textTheme.labelSmall,
+          ),
+        );
 }

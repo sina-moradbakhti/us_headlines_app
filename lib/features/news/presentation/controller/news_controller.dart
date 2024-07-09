@@ -70,7 +70,9 @@ class NewsController extends GetxController
       }
     }).whenComplete(() {
       GlobalFunctions.hideLoading();
-      newsRepo.cacheTheArticles(articles.value);
+      if (articles.isNotEmpty) {
+        newsRepo.cacheTheArticles(articles.value);
+      }
     });
   }
 
@@ -82,22 +84,24 @@ class NewsController extends GetxController
         .fetchAll(
       company: company.value,
       sortBy: sortBy.value,
-      page: currentPage.value,
+      page: currentPage.value + 1,
     )
         .then((result) {
       if (result.status == "ok") {
         articles.addAll(result.articles);
+        currentPage.value++;
       }
     }).whenComplete(() {
       GlobalFunctions.hideLoading();
-      newsRepo.cacheTheArticles(articles.value);
+      if (articles.isNotEmpty) {
+        newsRepo.cacheTheArticles(articles.value);
+      }
     });
   }
 
   void _onArticlesListScrolled() {
     if (scrolController.offset >= scrolController.position.maxScrollExtent &&
         !scrolController.position.outOfRange) {
-      currentPage.value++;
       _fetchLatestNewsMore();
     }
   }
