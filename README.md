@@ -39,6 +39,9 @@ internet_connection_checker_plus: ^2.3.0
 ## Refrences & Links
 for using the app you have to get your own API key via [News API website](https://newsapi.org/account)
 
+* Go to the `core` folder, then update the `apiKey` with your own
+
+
 ### Build & Start
 ```bash
 STEP 1
