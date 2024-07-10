@@ -28,22 +28,24 @@ class NewsController extends GetxController
   @override
   void onReady() {
     super.onReady();
-
-    _init();
+    init();
   }
 
-  void _init() {
-    isConnectedToInternet().then((hasNetwork) {
-      hasNetworkConnection.value = hasNetwork;
+  Future<void> init({
+    bool bypassInternetCheck = false,
+  }) async {
+    final hasNetwork = bypassInternetCheck
+        ? hasNetworkConnection.value
+        : await isConnectedToInternet();
+    hasNetworkConnection.value = hasNetwork;
 
-      if (!hasNetwork) {
-        _getLastCachedNews();
-      } else {
-        _fetchLatestNews();
-      }
+    if (!hasNetwork) {
+      await _getLastCachedNews();
+    } else {
+      await _fetchLatestNews();
+    }
 
-      _initListeners();
-    });
+    _initListeners();
   }
 
   Future<void> _getLastCachedNews() async {

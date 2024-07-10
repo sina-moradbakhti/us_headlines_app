@@ -4,18 +4,24 @@ import 'package:loader_overlay/loader_overlay.dart';
 
 class GlobalFunctions {
   static void showLoading() {
+    if (Get.context == null) return;
+
     if (!Get.context!.loaderOverlay.visible) {
       Get.context?.loaderOverlay.show();
     }
   }
 
   static void hideLoading() async {
+    if (Get.context == null) return;
+
     if (Get.context!.loaderOverlay.visible) {
       Get.context?.loaderOverlay.hide();
     }
   }
 
   static showErrorMessage(String message) {
+    if (Get.context == null) return;
+
     Get.snackbar(
       '',
       '',
