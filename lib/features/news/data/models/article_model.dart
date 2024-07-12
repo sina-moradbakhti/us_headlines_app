@@ -1,9 +1,13 @@
+import 'package:nexttoptech_assignment/core/utils/enums.dart';
+import 'package:nexttoptech_assignment/core/utils/extensions.dart';
+
 import '../../../../core/data/models/source_model.dart';
 
 class ArticleModel {
   final SourceModel source;
+  final FanCompany company;
   final String? author;
-  final String title;
+  final String? title;
   final String? description;
   final String? url;
   final String? urlToImage;
@@ -12,7 +16,8 @@ class ArticleModel {
 
   ArticleModel({
     required this.source,
-    required this.title,
+    required this.company,
+    this.title,
     this.description,
     this.url,
     this.content,
@@ -21,11 +26,15 @@ class ArticleModel {
     this.urlToImage,
   });
 
-  factory ArticleModel.fromJsonMap(Map<String, dynamic> jsonMap) =>
+  factory ArticleModel.fromJsonMap(
+    Map<String, dynamic> jsonMap,
+    String company,
+  ) =>
       ArticleModel(
         source: SourceModel.fromJsonMap(
           jsonMap['source'],
         ),
+        company: company.toFanCompany(),
         author: jsonMap['author'],
         content: jsonMap['content'],
         description: jsonMap['description'],
@@ -40,6 +49,7 @@ class ArticleModel {
   Map<String, dynamic> toJsonObject() {
     return {
       'source': source.toJsonObject(),
+      'company': company.toStrName(),
       'author': author,
       'content': content,
       'description': description,

@@ -1,3 +1,6 @@
+import 'package:nexttoptech_assignment/core/utils/enums.dart';
+import 'package:nexttoptech_assignment/core/utils/extensions.dart';
+
 import '../../../features/news/data/models/article_model.dart';
 
 class ArticlesResponseModel {
@@ -13,6 +16,7 @@ class ArticlesResponseModel {
 
   factory ArticlesResponseModel.fromJsonMap(
     Map<String, dynamic> jsonMap,
+    FanCompany company,
   ) =>
       ArticlesResponseModel(
         status: jsonMap['status'],
@@ -20,7 +24,10 @@ class ArticlesResponseModel {
         articles: (jsonMap['articles'] != null && jsonMap['articles'] is List)
             ? [
                 for (final item in jsonMap['articles'])
-                  ArticleModel.fromJsonMap(item),
+                  ArticleModel.fromJsonMap(
+                    item,
+                    company.toStrName(),
+                  ),
               ]
             : [],
       );

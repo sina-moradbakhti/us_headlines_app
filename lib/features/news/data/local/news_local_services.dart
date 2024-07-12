@@ -31,7 +31,11 @@ class NewsLocalServices extends LocalServiceHelper {
       final mapData = jsonDecode(jsonData);
 
       return [
-        for (final item in mapData) ArticleModel.fromJsonMap(item),
+        for (final item in mapData)
+          ArticleModel.fromJsonMap(
+            item,
+            item['company'],
+          ),
       ];
     } catch (er) {
       debugPrint('''

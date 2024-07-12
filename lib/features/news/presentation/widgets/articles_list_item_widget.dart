@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:nexttoptech_assignment/core/constants/app_routes.dart';
+import 'package:nexttoptech_assignment/core/constants/app_strings.dart';
 import 'package:nexttoptech_assignment/core/theme/app_colors.dart';
 import 'package:nexttoptech_assignment/core/utils/extensions.dart';
 
@@ -60,7 +61,7 @@ class ArticleListItemWidget extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          article.title,
+                          article.title ?? '[${AppStrings.noTitle}]',
                           style: Get.textTheme.titleSmall?.copyWith(
                             fontWeight: FontWeight.bold,
                           ),
@@ -112,13 +113,32 @@ class ArticleListItemWidget extends StatelessWidget {
               const SizedBox(
                 height: 10,
               ),
-              Text(
-                'Author: ${article.author}',
-                style: Get.textTheme.labelSmall?.copyWith(
-                  color: AppColors.lightGreyColor,
-                  fontWeight: FontWeight.w300,
-                  fontSize: 9,
-                ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  SizedBox(
+                    width: 120,
+                    child: Text(
+                      '${AppStrings.author}: ${article.author}',
+                      style: Get.textTheme.labelSmall?.copyWith(
+                        color: AppColors.lightGreyColor,
+                        fontWeight: FontWeight.w300,
+                        fontSize: 9,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                  Text(
+                    article.company.toStrName(),
+                    style: Get.textTheme.labelSmall?.copyWith(
+                      color: AppColors.lightGreyColor,
+                      fontWeight: FontWeight.w300,
+                      fontSize: 9,
+                    ),
+                  ),
+                ],
               ),
             ],
           ),

@@ -43,7 +43,7 @@ class NewsDetailsScreen extends GetWidget<NewsDetailsController> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    controller.article.title,
+                    controller.article.title ?? '[No Title]',
                     style: Get.textTheme.titleSmall?.copyWith(
                       fontWeight: FontWeight.bold,
                     ),

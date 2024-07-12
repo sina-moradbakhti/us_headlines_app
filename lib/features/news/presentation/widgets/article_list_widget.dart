@@ -26,12 +26,12 @@ class ArticleListWidget extends GetView<NewsController> {
                   Opacity(
                     opacity: hasNetwork.value ? 1 : 0.4,
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      mainAxisAlignment: MainAxisAlignment.end,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        AppbarCompanyDropdownWidget(
-                          enable: hasNetwork.value,
-                        ),
+                        // AppbarCompanyDropdownWidget(
+                        //   enable: hasNetwork.value,
+                        // ),
                         AppbarSortByDropdownWidget(
                           enable: hasNetwork.value,
                         ),

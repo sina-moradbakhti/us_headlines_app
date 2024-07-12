@@ -47,6 +47,7 @@ class NewsRepositoryImpl implements NewsRepository {
         jsonDecode(
           success.response.body,
         ),
+        company,
       );
     });
   }

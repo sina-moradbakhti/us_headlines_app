@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
 
+import '../../../../core/data/models/articles_response_model.dart';
 import '../../../../core/data/remote/connectivity_service_helper.dart';
 import '../../../../core/utils/enums.dart';
 import '../../../../core/utils/global_functions.dart';
@@ -19,7 +20,6 @@ class NewsController extends GetxController
 
   RxInt currentPage = RxInt(1);
   Rx<SortBy> sortBy = Rx<SortBy>(SortBy.publishedAt);
-  Rx<FanCompany> company = Rx<FanCompany>(FanCompany.microsoft);
   RxBool hasNetworkConnection = RxBool(true);
 
   RxList<ArticleModel> articles = RxList<ArticleModel>([]);
@@ -57,48 +57,117 @@ class NewsController extends GetxController
 
   Future<void> _fetchLatestNews() async {
     currentPage.value = 1;
-    GlobalFunctions.showLoading();
 
-    newsRepo
-        .fetchAll(
-      company: company.value,
-      sortBy: sortBy.value,
-      page: currentPage.value,
-    )
-        .then((result) {
-      if (result.status == "ok") {
-        articles.clear();
-        articles.addAll(result.articles);
+    final List<Future<ArticlesResponseModel>> futures = [
+      newsRepo.fetchAll(
+        company: FanCompany.microsoft,
+        sortBy: sortBy.value,
+        page: currentPage.value,
+      ),
+      newsRepo.fetchAll(
+        company: FanCompany.apple,
+        sortBy: sortBy.value,
+        page: currentPage.value,
+      ),
+      newsRepo.fetchAll(
+        company: FanCompany.google,
+        sortBy: sortBy.value,
+        page: currentPage.value,
+      ),
+      newsRepo.fetchAll(
+        company: FanCompany.tesla,
+        sortBy: sortBy.value,
+        page: currentPage.value,
+      ),
+    ];
+
+    List<ArticleModel> list = [];
+
+    try {
+      GlobalFunctions.showLoading();
+
+      for (final futureItem in futures) {
+        final result = await futureItem;
+        if (result.status == "ok") {
+          list.addAll(result.articles);
+        }
       }
-    }).whenComplete(() {
+
       GlobalFunctions.hideLoading();
+
+      articles.clear();
+      articles.addAll(list);
+
       if (articles.isNotEmpty) {
         newsRepo.cacheTheArticles(articles.value);
       }
-    });
+    } catch (er) {
+      debugPrint('''
+      ===========[ NEWS CONTROLLER EXCEPTION ]===========
+      FUNC     > _fetchLatestNews
+      MESSAGE > $er
+      ===============================================================
+      ''');
+      GlobalFunctions.hideLoading();
+    }
   }
 
   Future<void> _fetchLatestNewsMore() async {
     /* Utilize for loading more data */
     GlobalFunctions.showLoading();
 
-    newsRepo
-        .fetchAll(
-      company: company.value,
-      sortBy: sortBy.value,
-      page: currentPage.value + 1,
-    )
-        .then((result) {
-      if (result.status == "ok") {
-        articles.addAll(result.articles);
-        currentPage.value++;
+    final List<Future<ArticlesResponseModel>> futures = [
+      newsRepo.fetchAll(
+        company: FanCompany.microsoft,
+        sortBy: sortBy.value,
+        page: currentPage.value + 1,
+      ),
+      newsRepo.fetchAll(
+        company: FanCompany.apple,
+        sortBy: sortBy.value,
+        page: currentPage.value + 1,
+      ),
+      newsRepo.fetchAll(
+        company: FanCompany.google,
+        sortBy: sortBy.value,
+        page: currentPage.value + 1,
+      ),
+      newsRepo.fetchAll(
+        company: FanCompany.tesla,
+        sortBy: sortBy.value,
+        page: currentPage.value + 1,
+      ),
+    ];
+
+    List<ArticleModel> list = [];
+
+    try {
+      GlobalFunctions.showLoading();
+
+      for (final futureItem in futures) {
+        final result = await futureItem;
+        if (result.status == "ok") {
+          list.addAll(result.articles);
+        }
       }
-    }).whenComplete(() {
+
       GlobalFunctions.hideLoading();
+
+      articles.addAll(list);
+      currentPage.value++;
+
       if (articles.isNotEmpty) {
         newsRepo.cacheTheArticles(articles.value);
       }
-    });
+    } catch (er) {
+      debugPrint('''
+      ===========[ NEWS CONTROLLER EXCEPTION ]===========
+      FUNC     > _fetchLatestNewsMore
+      MESSAGE > $er
+      ===============================================================
+      ''');
+      GlobalFunctions.hideLoading();
+    }
   }
 
   void _onArticlesListScrolled() {
@@ -123,7 +192,6 @@ class NewsController extends GetxController
       },
     );
     sortBy.listen((newSortBy) => _fetchLatestNews());
-    company.listen((newComapny) => _fetchLatestNews());
     scrolController.addListener(_onArticlesListScrolled);
   }
 }
